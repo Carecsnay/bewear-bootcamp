@@ -10,6 +10,10 @@ npx tsx --env-file=.env src/db/seed.ts
 
 npx drizzle-kit studio
 
+<!-- Gerar Schema de autenticação com o better-auth -->
+
+npx @better-auth/cli@1.2.12 generate
+
 <!-- Letras Certificado -->
 
 1 aula: S
