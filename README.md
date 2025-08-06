@@ -6,7 +6,7 @@ npx drizzle-kit push
 
 npx tsx --env-file=.env src/db/seed.ts
 
-<!-- Verificar os dados -->
+<!-- Verificar os dados com prisma studio -->
 
 npx drizzle-kit studio
 
