@@ -3,9 +3,16 @@ import Image from "next/image";
 import { db } from "@/db";
 
 import Header from "./components/common/header";
+import ProductsList from "./components/common/products-list";
 
 export default async function Home() {
-  const products = await db.query.productTable.findMany({});
+  const products = await db.query.productTable.findMany({
+    with: {
+      variants: true,
+      category: true,
+    },
+  });
+
   return (
     <>
       <Header />;
@@ -18,6 +25,8 @@ export default async function Home() {
           sizes="100vw"
           className="h-auto w-full rounded-md"
         />
+
+        <ProductsList products={products} title="Mais vendidos" />
 
         <Image
           src="/banner-02.png"
