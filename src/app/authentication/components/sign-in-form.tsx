@@ -51,6 +51,7 @@ const SignInForm = () => {
       password: values.password, // required
       fetchOptions: {
         onSuccess: () => {
+          toast.success(`Login bem-sucedido.`);
           router.push("/");
         },
         onError: (ctx) => {
@@ -121,7 +122,9 @@ const SignInForm = () => {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit">Entrar</Button>
+              <Button className="w-full" type="submit">
+                Entrar
+              </Button>
             </CardFooter>
           </form>
         </Form>
