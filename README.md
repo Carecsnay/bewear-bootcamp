@@ -17,5 +17,7 @@ npx @better-auth/cli@1.2.12 generate
 <!-- Letras Certificado -->
 
 1 aula: S
-2 aula:
-3 aula:
+2 aula: E
+3 aula: X
+4 aula: F
+5 aula:
