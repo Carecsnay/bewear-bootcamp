@@ -2,25 +2,24 @@ import { eq } from "drizzle-orm";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import Footer from "@/app/components/common/footer";
-import Header from "@/app/components/common/header";
-import ProductsList from "@/app/components/common/products-list";
-import { Button } from "@/components/ui/button";
+import Footer from "@/components/common/footer";
+import Header from "@/components/common/header";
+import ProductsList from "@/components/common/products-list";
 import { db } from "@/db";
 import { productTable, productVariantTable } from "@/db/schema";
 import { formatCentsToBRL } from "@/helpers/money";
 
-import QuantitySelector from "../components/quantity-selector";
-import VariantSelector from "../components/variant-selector";
+import ProductActions from "./components/product-actions";
+import VariantSelector from "./components/variant-selector";
 
 interface ProductVariantPageProps {
   params: Promise<{ slug: string }>;
 }
 
 const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
-  const slug = await params;
+  const { slug } = await params;
   const productVariant = await db.query.productVariantTable.findFirst({
-    where: eq(productVariantTable.slug, slug.slug),
+    where: eq(productVariantTable.slug, slug),
     with: {
       product: {
         with: {
@@ -35,32 +34,31 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
   const likelyProducts = await db.query.productTable.findMany({
     where: eq(productTable.categoryId, productVariant.product.categoryId),
     with: {
-      variants: {
-        with: {},
-      },
+      variants: true,
     },
   });
   return (
     <>
       <Header />
-      <div className="flex flex-col space-x-6">
+      <div className="flex flex-col space-y-6">
         <Image
           src={productVariant.imageUrl}
           alt={productVariant.name}
           sizes="100vw"
-          width={0}
           height={0}
-          className="h-auto w-full rounded-3xl object-cover"
+          width={0}
+          className="h-auto w-full object-cover"
         />
-      </div>
-      <div className="space-y-6">
-        <div className="px-5 pt-5">
+
+        <div className="px-5">
           <VariantSelector
             selectedVariantSlug={productVariant.slug}
             variants={productVariant.product.variants}
           />
         </div>
+
         <div className="px-5">
+          {/* DESCRIÇÃO */}
           <h2 className="text-lg font-semibold">
             {productVariant.product.name}
           </h2>
@@ -71,26 +69,18 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
             {formatCentsToBRL(productVariant.priceInCents)}
           </h3>
         </div>
+
+        <ProductActions productVariantId={productVariant.id} />
+
         <div className="px-5">
-          <QuantitySelector />
+          <p className="text-shadow-amber-600">
+            {productVariant.product.description}
+          </p>
         </div>
-        <div className="flex flex-col space-y-4 px-5">
-          <Button className="rounded-full" size={"lg"} variant={"outline"}>
-            Adicionar a sacola
-          </Button>
-          <Button className="rounded-full" size={"lg"}>
-            Comprar agora
-          </Button>
-        </div>
-        <div className="px-5">
-          <p className="text-sm">{productVariant.product.description}</p>
-        </div>
-        <div className="px-0">
-          <ProductsList title="Talvez você goste" products={likelyProducts} />
-        </div>
-        <div>
-          <Footer />
-        </div>
+
+        <ProductsList title="Talvez você goste" products={likelyProducts} />
+
+        <Footer />
       </div>
     </>
   );
