@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import Footer from "@/app/components/common/footer";
 import Header from "@/app/components/common/header";
 import ProductsList from "@/app/components/common/products-list";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,9 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
         </div>
         <div className="px-0">
           <ProductsList title="Talvez você goste" products={likelyProducts} />
+        </div>
+        <div>
+          <Footer />
         </div>
       </div>
     </>

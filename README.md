@@ -20,4 +20,4 @@ npx @better-auth/cli@1.2.12 generate
 2 aula: E
 3 aula: X
 4 aula: F
-5 aula:
+5 aula: X
