@@ -40,7 +40,11 @@ export default async function Home() {
           />
         </div>
 
-        <ProductsList products={products} title="Mais vendidos" />
+        <ProductsList
+          products={products}
+          title="Mais vendidos"
+          textContainerClassName=""
+        />
 
         <div className="px-5">
           <CategorySelector categories={categories} />
@@ -57,7 +61,11 @@ export default async function Home() {
           />
         </div>
 
-        <ProductsList products={newlyCreatedProducts} title="Novos produtos" />
+        <ProductsList
+          products={newlyCreatedProducts}
+          title="Novos produtos"
+          textContainerClassName=""
+        />
         <Footer />
       </div>
     </>
