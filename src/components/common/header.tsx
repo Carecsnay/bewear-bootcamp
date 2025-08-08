@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth-client";
 
-import Cart from "./cart";
+import { Cart } from "./cart";
 
 const Header = () => {
   const { data: session } = authClient.useSession();
