@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ShoppingBasketIcon } from "lucide-react";
+import Image from "next/image";
 
 import { getCart } from "@/actions/get-cart";
-import CartItem from "@/components/common/cart-item";
 import { Button } from "@/components/ui/button";
 import { formatCentsToBRL } from "@/helpers/money";
 
@@ -17,9 +17,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import CartItem from "./cart-item";
 
 export const Cart = () => {
-  const { data: cart } = useQuery({
+  const { data: cart, isPending: cartIsLoading } = useQuery({
     queryKey: ["cart"],
     queryFn: () => getCart(),
   });
@@ -43,6 +44,7 @@ export const Cart = () => {
                   <CartItem
                     key={item.id}
                     id={item.id}
+                    productVariantId={item.productVariant.id}
                     productName={item.productVariant.product.name}
                     productVariantName={item.productVariant.name}
                     productVariantImageUrl={item.productVariant.imageUrl}
@@ -87,3 +89,5 @@ export const Cart = () => {
     </Sheet>
   );
 };
+
+// SERVER ACTION
