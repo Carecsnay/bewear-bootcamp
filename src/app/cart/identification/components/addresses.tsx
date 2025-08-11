@@ -29,6 +29,7 @@ const Addresses = () => {
               </CardContent>
             </Card>
           </RadioGroup>
+          {selectedAddress === "add-new" && <Card></Card>}
         </CardContent>
       </Card>
     </div>
