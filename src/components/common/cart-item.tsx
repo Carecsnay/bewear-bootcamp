@@ -45,7 +45,7 @@ const CartItem = ({
   const handleDecreaseQuantityClick = () => {
     decreaseCartProductQuantityMutation.mutate(undefined, {
       onSuccess: () => {
-        toast.success("Quantidade do produto diminuida.");
+        toast.success("Quantidade do produto diminuída.");
       },
     });
   };
