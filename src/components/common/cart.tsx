@@ -87,5 +87,3 @@ export const Cart = () => {
     </Sheet>
   );
 };
-
-// SERVER ACTION

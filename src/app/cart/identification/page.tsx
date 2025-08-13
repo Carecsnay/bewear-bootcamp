@@ -1,42 +1,64 @@
-import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { desc } from "drizzle-orm";
+import Image from "next/image";
 
+import CategorySelector from "@/components/common/category-selector";
+import Footer from "@/components/common/footer";
 import Header from "@/components/common/header";
+import ProductsList from "@/components/common/products-list";
 import { db } from "@/db";
-import { cartTable, shippingAddressTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { productTable } from "@/db/schema";
 
-import Addresses from "./components/addresses";
-
-const IdentificationPage = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session?.user.id) {
-    redirect("/");
-  }
-  const cart = await db.query.cartTable.findFirst({
-    where: eq(cartTable.userId, session.user.id),
+const Home = async () => {
+  const products = await db.query.productTable.findMany({
     with: {
-      items: true,
+      variants: true,
     },
   });
-  if (!cart || cart?.items.length === 0) {
-    redirect("/");
-  }
-  const shippingAddresses = await db.query.shippingAddressTable.findMany({
-    where: eq(shippingAddressTable.userId, session.user.id),
+  const newlyCreatedProducts = await db.query.productTable.findMany({
+    orderBy: [desc(productTable.createdAt)],
+    with: {
+      variants: true,
+    },
   });
+  const categories = await db.query.categoryTable.findMany({});
 
   return (
     <>
       <Header />
-      <div className="px-5">
-        <Addresses shippingAddresses={shippingAddresses} />
+      <div className="space-y-6">
+        <div className="px-5">
+          <Image
+            src="/banner-01.png"
+            alt="Leve uma vida com estilo"
+            height={0}
+            width={0}
+            sizes="100vw"
+            className="h-auto w-full"
+          />
+        </div>
+
+        <ProductsList products={products} title="Mais vendidos" />
+
+        <div className="px-5">
+          <CategorySelector categories={categories} />
+        </div>
+
+        <div className="px-5">
+          <Image
+            src="/banner-02.png"
+            alt="Leve uma vida com estilo"
+            height={0}
+            width={0}
+            sizes="100vw"
+            className="h-auto w-full"
+          />
+        </div>
+
+        <ProductsList products={newlyCreatedProducts} title="Novos produtos" />
+        <Footer />
       </div>
     </>
   );
 };
 
-export default IdentificationPage;
+export default Home;
