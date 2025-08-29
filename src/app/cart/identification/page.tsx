@@ -1,64 +1,38 @@
-import { desc } from "drizzle-orm";
-import Image from "next/image";
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import CategorySelector from "@/components/common/category-selector";
-import Footer from "@/components/common/footer";
 import Header from "@/components/common/header";
-import ProductsList from "@/components/common/products-list";
 import { db } from "@/db";
-import { productTable } from "@/db/schema";
+import { cartTable, shippingAddressTable } from "@/db/schema";
+import { auth } from "@/lib/auth";
 
-const Home = async () => {
-  const products = await db.query.productTable.findMany({
+import Addresses from "./components/addresses";
+
+const IdentificationPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session?.user.id) {
+    redirect("/");
+  }
+  const cart = await db.query.cartTable.findFirst({
+    where: eq(cartTable.userId, session.user.id),
     with: {
-      variants: true,
+      items: true,
     },
   });
-  const newlyCreatedProducts = await db.query.productTable.findMany({
-    orderBy: [desc(productTable.createdAt)],
-    with: {
-      variants: true,
-    },
-  });
-  const categories = await db.query.categoryTable.findMany({});
-
+  if (!cart || cart?.items.length === 0) {
+    redirect("/");
+  }
   return (
     <>
       <Header />
-      <div className="space-y-6">
-        <div className="px-5">
-          <Image
-            src="/banner-01.png"
-            alt="Leve uma vida com estilo"
-            height={0}
-            width={0}
-            sizes="100vw"
-            className="h-auto w-full"
-          />
-        </div>
-
-        <ProductsList products={products} title="Mais vendidos" />
-
-        <div className="px-5">
-          <CategorySelector categories={categories} />
-        </div>
-
-        <div className="px-5">
-          <Image
-            src="/banner-02.png"
-            alt="Leve uma vida com estilo"
-            height={0}
-            width={0}
-            sizes="100vw"
-            className="h-auto w-full"
-          />
-        </div>
-
-        <ProductsList products={newlyCreatedProducts} title="Novos produtos" />
-        <Footer />
+      <div className="px-5">
+        <Addresses />
       </div>
     </>
   );
 };
 
-export default Home;
+export default IdentificationPage;
